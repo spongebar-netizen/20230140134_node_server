@@ -9,3 +9,4 @@ const presensiRecords = [
 ];
 
 module.exports = presensiRecords;
+
