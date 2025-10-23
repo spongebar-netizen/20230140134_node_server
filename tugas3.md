@@ -41,3 +41,7 @@ Ini adalah hasil ketika pengguna dengan role 'karyawan' mencoba mengakses lapora
 Setelah role diubah menjadi 'admin' di dalam middleware, pengguna berhasil mengakses laporan harian dan server merespon dengan data presensi dan status 200 OK.
 
 ![Laporan Berhasil Admin](./ss/reportadmin.png)
+
+
+Lalu Idrak Yadafi Fatan NUraga 
+20230140134
