@@ -5,7 +5,7 @@ exports.addUserData = (req, res, next) => {
     id: 123,
     nama: 'User Karyawan',
     // Ganti role ini menjadi 'admin' untuk menguji endpoint laporan nanti
-    role: 'admin' 
+    role: 'admin'
   };
   next(); // Lanjutkan ke proses berikutnya
 };
