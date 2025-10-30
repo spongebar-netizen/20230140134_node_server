@@ -1,6 +1,7 @@
 const { Presensi } = require("../models");
 const { format } = require("date-fns-tz");
-const timeZone = "Asia/Jakarta";
+const { Op } = require("sequelize");
+const { validationResult } = require('express-validator'); // <-- 1. IMPOR validationResult
 
 // --- Fungsi dari Praktikum 4 ---
 exports.CheckIn = async (req, res) => {
@@ -94,8 +95,20 @@ exports.deletePresensi = async (req, res) => {
   }
 };
 
-// --- Fungsi BARU dari Praktikum 5 (Langkah 2) ---
+// --- Fungsi dari Praktikum 5 (Langkah 2) DENGAN VALIDASI ---
 exports.updatePresensi = async (req, res) => {
+  // 2. TAMBAHKAN BLOK INI di paling atas
+  // Tangkap semua error validasi dari rute
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Jika ada error, kirim respon 400 Bad Request
+    return res.status(400).json({
+        message: "Data yang dikirim tidak valid",
+        errors: errors.array() // Tampilkan detail errornya
+    });
+  }
+  // --- Akhir dari blok validasi ---
+
   try {
     const presensiId = req.params.id;
     const { checkIn, checkOut, nama } = req.body;
@@ -115,6 +128,7 @@ exports.updatePresensi = async (req, res) => {
         .json({ message: "Catatan presensi tidak ditemukan." });
     }
 
+    // Gunakan data yang sudah divalidasi dan diubah (oleh .toDate())
     recordToUpdate.checkIn = checkIn || recordToUpdate.checkIn;
     recordToUpdate.checkOut = checkOut || recordToUpdate.checkOut;
     recordToUpdate.nama = nama || recordToUpdate.nama;
