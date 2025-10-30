@@ -1,90 +1,116 @@
-// 1. Ganti sumber data dari array ke model Sequelize
-const { Presensi } = require("../models"); // 
-const { format } = require("date-fns-tz"); // [cite: 173]
-const timeZone = "Asia/Jakarta"; // [cite: 174]
+const { Presensi } = require("../models");
+const { format } = require("date-fns-tz");
+const timeZone = "Asia/Jakarta";
 
-exports.CheckIn = async (req, res) => { // [cite: 175]
-  // 2. Gunakan try...catch untuk error handling
-  try { // [cite: 177]
-    const { id: userId, nama: userName } = req.user; // [cite: 178]
-    const waktuSekarang = new Date(); // [cite: 179]
+// --- Fungsi dari Praktikum 4 ---
+exports.CheckIn = async (req, res) => {
+  try {
+    const { id: userId, nama: userName } = req.user;
+    const waktuSekarang = new Date();
 
-    // 3. Ubah cara mencari data menggunakan 'findOne' dari Sequelize
-    const existingRecord = await Presensi.findOne({ // [cite: 181]
-      where: { userId: userId, checkOut: null }, // [cite: 182]
+    const existingRecord = await Presensi.findOne({
+      where: { userId: userId, checkOut: null },
     });
 
-    if (existingRecord) { // [cite: 184]
+    if (existingRecord) {
       return res
         .status(400)
-        .json({ message: "Anda sudah melakukan check-in hari ini." }); // [cite: 185-187]
+        .json({ message: "Anda sudah melakukan check-in hari ini." });
     }
 
-    // 4. Ubah cara membuat data baru menggunakan 'create' dari Sequelize
-    const newRecord = await Presensi.create({ // 
-      userId: userId, // [cite: 191]
-      nama: userName, // [cite: 192]
-      checkIn: waktuSekarang, // [cite: 193]
+    const newRecord = await Presensi.create({
+      userId: userId,
+      nama: userName,
+      checkIn: waktuSekarang,
     });
 
-    const formattedData = { // [cite: 195]
-      userId: newRecord.userId, // [cite: 196]
-      nama: newRecord.nama, // [cite: 197]
-      checkIn: format(newRecord.checkIn, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }), // [cite: 198]
-      checkOut: null // [cite: 199]
+    const formattedData = {
+      userId: newRecord.userId,
+      nama: newRecord.nama,
+      checkIn: format(newRecord.checkIn, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
+      checkOut: null
     };
 
-    res.status(201).json({ // [cite: 201]
+    res.status(201).json({
       message: `Halo ${userName}, check-in Anda berhasil pada pukul ${format(
         waktuSekarang,
         "HH:mm:ss",
         { timeZone }
-      )} WIB`, // [cite: 202-206]
-      data: formattedData, // [cite: 207]
+      )} WIB`,
+      data: formattedData,
     });
-  } catch (error) { // [cite: 209]
-    // Jika terjadi error di database
-    res.status(500).json({ message: "Terjadi kesalahan pada server", error: error.message }); // [cite: 210]
+  } catch (error) {
+    res.status(500).json({ message: "Terjadi kesalahan pada server", error: error.message });
   }
 };
 
-exports.CheckOut = async (req, res) => { // [cite: 213]
-  // Gunakan try...catch
-  try { // [cite: 215]
-    const { id: userId, nama: userName } = req.user; // [cite: 216]
-    const waktuSekarang = new Date(); // [cite: 217]
+// --- Fungsi dari Praktikum 4 ---
+exports.CheckOut = async (req, res) => {
+  try {
+    const { id: userId, nama: userName } = req.user;
+    const waktuSekarang = new Date();
 
-    // Cari data di database
-    const recordToUpdate = await Presensi.findOne({ // [cite: 219]
-      where: { userId: userId, checkOut: null }, // [cite: 220]
+    const recordToUpdate = await Presensi.findOne({
+      where: { userId: userId, checkOut: null },
     });
 
-    if (!recordToUpdate) { // [cite: 222]
-      return res.status(404).json({ // [cite: 223]
-        message: "Tidak ditemukan catatan check-in yang aktif untuk Anda.", // [cite: 224]
+    if (!recordToUpdate) {
+      return res.status(404).json({
+        message: "Tidak ditemukan catatan check-in yang aktif untuk Anda.",
       });
     }
 
-    // 5. Update dan simpan perubahan ke database
-    recordToUpdate.checkOut = waktuSekarang; // [cite: 228]
-    await recordToUpdate.save(); // 
+    recordToUpdate.checkOut = waktuSekarang;
+    await recordToUpdate.save();
 
-    const formattedData = { // [cite: 230]
-      userId: recordToUpdate.userId, // [cite: 231]
-      nama: recordToUpdate.nama, // [cite: 232]
-      checkIn: format(recordToUpdate.checkIn, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }), // [cite: 233]
-      checkOut: format(recordToUpdate.checkOut, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }), // [cite: 234]
+    const formattedData = {
+      userId: recordToUpdate.userId,
+      nama: recordToUpdate.nama,
+      checkIn: format(recordToUpdate.checkIn, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
+      checkOut: format(recordToUpdate.checkOut, "yyyy-MM-dd HH:mm:ssXXX", { timeZone }),
     };
 
-    res.json({ // [cite: 236]
+    res.json({
       message: `Selamat jalan ${userName}, check-out Anda berhasil pada pukul ${format(
         waktuSekarang,
         "HH:mm:ss",
         { timeZone }
-      )} WIB`, // [cite: 237-241]
-      data: formattedData, // [cite: 242]
+      )} WIB`,
+      data: formattedData,
     });
-  } catch (error) { // [cite: 244]
-    res.status(500).json({ message: "Terjadi kesalahan pada server", error: error.message }); // [cite: 245]
+  } catch (error) {
+    res.status(500).json({ message: "Terjadi kesalahan pada server", error: error.message });
+  }
+};
+
+
+// --- Fungsi BARU dari Praktikum 5 ---
+exports.deletePresensi = async (req, res) => {
+  try {
+    const { id: userId } = req.user;
+    const presensiId = req.params.id;
+
+    const recordToDelete = await Presensi.findByPk(presensiId);
+
+    if (!recordToDelete) {
+      return res
+        .status(404)
+        .json({ message: "Catatan presensi tidak ditemukan." });
+    }
+
+    if (recordToDelete.userId !== userId) {
+      return res
+        .status(403)
+        .json({ message: "Akses ditolak: Anda bukan pemilik catatan ini." });
+    }
+
+    await recordToDelete.destroy();
+
+    res.status(204).send();
+
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Terjadi kesalahan pada server", error: error.message });
   }
 };
