@@ -8,6 +8,7 @@ const PORT = 3001;
 // Impor router untuk fitur baru
 const presensiRoutes = require("./routes/presensi");
 const reportRoutes = require("./routes/reports");
+const authController = require('../controllers/authController');
 
 // Middleware
 app.use(cors());
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 // Gunakan router untuk fitur presensi dan laporan
 app.use("/api/presensi", presensiRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/auth", authRoutes);
 
 app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}/`);
