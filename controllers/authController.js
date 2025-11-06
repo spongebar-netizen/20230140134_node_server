@@ -1,6 +1,7 @@
 const { User } = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+// PENTING: Ganti string rahasia ini dengan string acak yang panjang
 const JWT_SECRET = 'INI_ADALAH_KUNCI_RAHASIA_ANDA_YANG_SANGAT_AMAN';
 
 exports.register = async (req, res) => {
@@ -48,7 +49,7 @@ exports.login = async (req, res) => {
       role: user.role
     };
     const token = jwt.sign(payload, JWT_SECRET, {
-      expiresIn: '1h'
+      expiresIn: '1h' // Token akan hangus dalam 1 jam
     });
     res.json({
       message: "Login berhasil",

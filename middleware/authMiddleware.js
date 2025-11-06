@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 // Pastikan SECRET ini SAMA PERSIS dengan yang ada di authController.js
-const JWT_SECRET = 'AKU_GANTENG';
+const JWT_SECRET = 'INI_ADALAH_KUNCI_RAHASIA_ANDA_YANG_SANGAT_AMAN';
 
 exports.authenticateToken = (req, res, next) => {
   // 1. Ambil token dari header 'Authorization'

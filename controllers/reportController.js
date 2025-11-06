@@ -14,7 +14,7 @@ exports.getDailyReport = async (req, res) => {
     // 2. Filter by Nama (dari praktikum)
     if (nama) {
       options.where.nama = {
-        [Op.like]: `%${nama}%`,
+        [Op.like]:`%${nama}%`,
       };
     }
 
